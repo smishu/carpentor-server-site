@@ -19,6 +19,7 @@ async function run() {
         await client.connect();
         const productCollection = client.db('carpenter').collection('products');
         const bookingCollection = client.db('carpenter').collection('pacelBooks');
+        const userCollection = client.db('carpenter').collection('users');
 
         app.get('/product', async (req, res) => {
 
@@ -29,6 +30,20 @@ async function run() {
             res.send(products);
         });
 
+
+        app.put('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = req.body;
+            const filter = { email: email };
+            const option = { upsert: true };
+            const updateDoc = {
+                $set: user,
+            };
+            const result = await userCollection.updateOne(filter, updateDoc, option);
+            res.send(result);
+
+
+        })
 
 
         app.get('/available', async (req, res) => {
