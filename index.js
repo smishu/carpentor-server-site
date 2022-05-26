@@ -20,20 +20,30 @@ async function run() {
         const productCollection = client.db('carpenter').collection('products');
         const bookingCollection = client.db('carpenter').collection('pacelBooks');
 
-        app.get('/product', async (req, res) => {
+        // app.get('/product', async (req, res) => {
 
-            const query = {};
-            const cursor = productCollection.find(query);
-            const products = await cursor.toArray();
-            // console.log('products');
-            res.send(products);
+        //     const query = {};
+        //     const cursor = productCollection.find(query);
+        //     const products = await cursor.toArray();
+        //     // console.log('products');
+        //     res.send(products);
+        // })
+
+
+
+        app.get('/available', async (req, res) => {
+            const pacel = req.query.pacel || "CRAFTSMAN  Fiberglass";
+            const prooducts = await productCollection.find().toArray();
+            res.send(prooducts);
         })
+
         app.post('/pacelBook', async (req, res) => {
             const pacelBook = req.body;
             const result = await bookingCollection.insertOne(pacelBook);
 
             res.send(result);
         })
+
 
 
     }
