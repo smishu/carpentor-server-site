@@ -20,14 +20,14 @@ async function run() {
         const productCollection = client.db('carpenter').collection('products');
         const bookingCollection = client.db('carpenter').collection('pacelBooks');
 
-        // app.get('/product', async (req, res) => {
+        app.get('/product', async (req, res) => {
 
-        //     const query = {};
-        //     const cursor = productCollection.find(query);
-        //     const products = await cursor.toArray();
-        //     // console.log('products');
-        //     res.send(products);
-        // })
+            const query = {};
+            const cursor = productCollection.find(query);
+            const products = await cursor.toArray();
+            // console.log('products');
+            res.send(products);
+        });
 
 
 
@@ -35,7 +35,15 @@ async function run() {
             const pacel = req.query.pacel || "CRAFTSMAN  Fiberglass";
             const prooducts = await productCollection.find().toArray();
             res.send(prooducts);
-        })
+        });
+
+        app.get('/pacelBook', async (req, res) => {
+            const buyer = req.query.buyer;
+            const query = { buyer: buyer };
+            const pacelBooks = await bookingCollection.find(query).toArray();
+            res.send(pacelBooks);
+        });
+
 
         app.post('/pacelBook', async (req, res) => {
             const pacelBook = req.body;
