@@ -52,10 +52,17 @@ async function run() {
             res.send(users);
         })
 
+        app.get('/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = await userCollection.findOne({ email: email });
+            const isAdmin = user.role === 'admin';
+            res.send({ admin: isAdmin })
+        })
+
         app.put('/user/:admin/:email', async (req, res) => {
             const email = req.params.email;
-            const requester = req.decoded.email;
-            const requesterAccout = await userCollection.findOne({ email: requester });
+            // const requester = req.decoded.email;
+            const requesterAccout = await userCollection.findOne({ email: email });
             if (requesterAccout.role === "admin") {
                 const filter = { email: email };
                 const updateDoc = {
@@ -65,7 +72,7 @@ async function run() {
                 res.send(result);
             }
             else {
-                res.status(403).send({ message: 'Forbidden' })
+                res.status(403).send({ message: 'Forbidden' });
             }
 
 
