@@ -39,6 +39,7 @@ async function run() {
         const userCollection = client.db('carpenter').collection('users');
         const addproductsCollection = client.db('carpenter').collection('addproducts');
         const reviewCollection = client.db('carpenter').collection('reviews');
+        const reviewsCollection = client.db('carpenter').collection('review');
 
         app.get('/product', async (req, res) => {
 
@@ -47,6 +48,13 @@ async function run() {
             const products = await cursor.toArray();
             // console.log('products');
             res.send(products);
+        });
+        app.get('/reviews', async (req, res) => {
+
+            const query = {};
+            const cursor = reviewsCollection.find(query);
+            const review = await cursor.toArray();
+            res.send(review);
         });
 
         app.get('/user', verifyJWT, async (req, res) => {
@@ -64,7 +72,7 @@ async function run() {
 
         app.put('/user/:admin/:email', async (req, res) => {
             const email = req.params.email;
-            // const requester = req.decoded.email;
+
             const requesterAccout = await userCollection.findOne({ email: email });
             if (requesterAccout.role === "admin") {
                 const filter = { email: email };
