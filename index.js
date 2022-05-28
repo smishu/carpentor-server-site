@@ -37,11 +37,13 @@ async function run() {
         const productCollection = client.db('carpenter').collection('products');
         const bookingCollection = client.db('carpenter').collection('pacelBooks');
         const userCollection = client.db('carpenter').collection('users');
+        const addproductsCollection = client.db('carpenter').collection('addproducts');
+        const reviewCollection = client.db('carpenter').collection('reviews');
 
         app.get('/product', async (req, res) => {
 
             const query = {};
-            const cursor = productCollection.find(query);
+            const cursor = productCollection.find(query).project({ name: 1 });
             const products = await cursor.toArray();
             // console.log('products');
             res.send(products);
@@ -58,6 +60,7 @@ async function run() {
             const isAdmin = user.role === 'admin';
             res.send({ admin: isAdmin })
         })
+
 
         app.put('/user/:admin/:email', async (req, res) => {
             const email = req.params.email;
@@ -121,6 +124,25 @@ async function run() {
 
             res.send(result);
         })
+        app.post('/newProduct ', async (req, res) => {
+            const newProduct = req.body;
+            const result = await addproductsCollection.insertOne(newProduct);
+            res.send(result);
+        })
+
+        // add review
+        app.post('/review', async (req, res) => {
+            const review = req.body;
+            const result = await reviewCollection.insertOne(review);
+            res.send(result);
+        })
+
+        app.get("/review", async (req, res) => {
+            const query = {};
+            const cursor = reviewCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        });
 
 
 
